@@ -31,6 +31,15 @@ tasks:
   kind:
     cmds:
       - ./kind/kind {{.CLI_ARGS}}
+  ansible:
+    cmds:
+      - ansible {{.CLI_ARGS}}
+  ansible-inventory:
+    cmds:
+      - ansible-inventory {{.CLI_ARGS}}
+  ansible-playbook:
+    cmds:
+      - ansible-playbook {{.CLI_ARGS}}
   kind_up:
     cmds:
       - echo $KUBECONFIG

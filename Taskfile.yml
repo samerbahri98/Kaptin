@@ -1,0 +1,39 @@
+---
+version: '3'
+
+dotenv: ['.env']
+
+env:
+  KUBECONFIG: '{{.USER_WORKING_DIR}}/_cache/.kube/config'
+
+tasks:
+  venv:
+    cmds:
+      - virtualenv .venv
+      - echo RUN "source .venv/bin/activate" manually \(Ctrl + V\)
+      - echo source .venv/bin/activate | xclip -se c
+  download:
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - defer: {task: clear_cache}
+      - sh scripts/download_kind.sh
+      - pip install -r requirements.txt
+  clear_cache:
+    cmds:
+      - rm -rf _cache/*
+      - touch _cache/.gitkeep
+  k9s:
+    cmds:
+      - ./kind/k9s {{.CLI_ARGS}}
+  kubectl:
+    cmds:
+      - ./kind/kubectl {{.CLI_ARGS}}
+  kind:
+    cmds:
+      - ./kind/kind {{.CLI_ARGS}}
+  kind_up:
+    cmds:
+      - echo $KUBECONFIG
+      - ./kind/kind create cluster
+        --image kindest/node:$K8S_VERSION
+        --config=./kind/config/Cluster.yml
